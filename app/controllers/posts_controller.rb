@@ -1,10 +1,11 @@
 class PostsController < ApplicationController
   def index
     @posts = Post.left_joins(:reviews)
-                 .group(:id)
-                 .order('AVG(reviews.rating) DESC NULLS LAST')
-                 .paginate(page: params[:page], per_page: 10)
-    render json: { posts: @posts }
+             .group(:id)
+             .order(Arel.sql('AVG(reviews.rating) DESC NULLS LAST'))
+             .paginate(page: params[:page], per_page: 10)
+
+render json: { posts: @posts }
   end
 
   def create
@@ -13,7 +14,7 @@ class PostsController < ApplicationController
     if @post.save
       render json: { post: @post }
     else
-      render json: {"post hasn't been created successfully"}
+      render json: {note: "post hasn't been created successfully"}
     end
   end
 
